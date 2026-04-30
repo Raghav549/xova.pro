@@ -1,16 +1,16 @@
-[![Xova Open Source Codebase](./public/social_preview_index.jpg)](https://xova.pro)
+[![Xova Open Source Codebase](./public/social_preview_index.jpg)](https://Xova)
 
-> Welcome to the **Xova** open-source codebase! This repo contains a simple example app using the core components from xova.pro to help you get started building **AI-powered software development tools** powered by StackBlitz’s **WebContainer API**.
+> Welcome to the **Xova** open-source codebase! This repo contains a simple example app using the core components from Xova to help you get started building **AI-powered software development tools** powered by StackBlitz’s **WebContainer API**.
 
 ### Why Build with Xova + WebContainer API
 
 By building with the Xova + WebContainer API you can create browser-based applications that let users **prompt, run, edit, and deploy** full-stack web apps directly in the browser, without the need for virtual machines. With WebContainer API, you can build apps that give AI direct access and full control over a **Node.js server**, **filesystem**, **package manager** and **dev terminal** inside your users browser tab. This powerful combination allows you to create a new class of development tools that support all major JavaScript libraries and Node packages right out of the box, all without remote environments or local installs.
 
-### What’s the Difference Between Xova (This Repo) and [Xova.new](https://xova.pro)?
+### What’s the Difference Between Xova (This Repo) and [Xova](https://Xova)?
 
-- **Xova.new**: This is the **commercial product** from StackBlitz—a hosted, browser-based AI development tool that enables users to prompt, run, edit, and deploy full-stack web applications directly in the browser. Built on top of the [Xova open-source repo](https://github.com/stackblitz/xova.pro) and powered by the StackBlitz **WebContainer API**.
+- **Xova**: This is the **commercial product** from StackBlitz—a hosted, browser-based AI development tool that enables users to prompt, run, edit, and deploy full-stack web applications directly in the browser. Built on top of the [Xova open-source repo](https://github.com/stackblitz/Xova) and powered by the StackBlitz **WebContainer API**.
 
-- **Xova (This Repo)**: This open-source repository provides the core components used to make **Xova.new**. This repo contains the UI interface for Xova as well as the server components, built using [Remix Run](https://remix.run/). By leveraging this repo and StackBlitz’s **WebContainer API**, you can create your own AI-powered development tools and full-stack applications that run entirely in the browser.
+- **Xova (This Repo)**: This open-source repository provides the core components used to make **Xova**. This repo contains the UI interface for Xova as well as the server components, built using [Remix Run](https://remix.run/). By leveraging this repo and StackBlitz’s **WebContainer API**, you can create your own AI-powered development tools and full-stack applications that run entirely in the browser.
 
 # Get Started Building with Xova
 
@@ -33,7 +33,7 @@ deployed using [CloudFlare Pages](https://pages.cloudflare.com/) and
 Xova uses the [AI SDK](https://github.com/vercel/ai) to integrate with AI
 models. At this time, Xova supports using Anthropic's Claude Sonnet 3.5.
 You can get an API key from the [Anthropic API Console](https://console.anthropic.com/) to use with Xova.
-Take a look at how [Xova uses the AI SDK](https://github.com/stackblitz/xova.pro/tree/main/app/lib/.server/llm)
+Take a look at how [Xova uses the AI SDK](https://github.com/stackblitz/Xova/tree/main/app/lib/.server/llm)
 
 ## Prerequisites
 
@@ -47,7 +47,7 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository (if you haven't already):
 
 ```bash
-git clone https://github.com/stackblitz/xova.pro.git
+git clone https://github.com/stackblitz/Xova.git
 ```
 
 2. Install dependencies:

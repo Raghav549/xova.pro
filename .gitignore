@@ -1,1 +1,1 @@
-Nothing should be ignored in this case, as the changes only include source files (`.tsx`, `.scss`, `.md`, `.svg`) and no build artifacts, dependencies, or temporary files.
+Nothing should be ignored based on the provided file changes. The changes only include source/config files (.md files) and no build artifacts, dependencies, or temporary files.
