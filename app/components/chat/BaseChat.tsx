@@ -105,12 +105,12 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
               >
                 <div
                   className={classNames(
-                    'shadow-sm border border-xova-elements-borderColor bg-xova-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden',
+                    'shadow-sm border-xova-elements-borderColor bg-xova-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden futuristic-prompt',
                   )}
                 >
                   <textarea
                     ref={textareaRef}
-                    className={`w-full pl-4 pt-4 pr-16 focus:outline-none resize-none text-md text-xova-elements-textPrimary placeholder-xova-elements-textTertiary bg-transparent`}
+                    className={`w-full pl-4 pt-4 pr-16 focus:outline-none resize-none text-md text-xova-elements-textPrimary placeholder-xova-elements-textTertiary bg-transparent animated-placeholder`}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
                         if (event.shiftKey) {
