@@ -1,4 +1,4 @@
-export interface BoltArtifactData {
+export interface XovaArtifactData {
   id: string;
   title: string;
 }
