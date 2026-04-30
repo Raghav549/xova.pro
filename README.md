@@ -35,12 +35,6 @@ Here are some tips to get the most out of Xova.new:
 
 ## FAQs
 
-**Where do I sign up for a paid plan?**  
-Xova.new is free to get started. If you need more AI tokens or want private projects, you can purchase a paid subscription in your [Xova.new](https://xova.pro) settings, in the lower-left hand corner of the application. 
-
-**What happens if I hit the free usage limit?**  
-Once your free daily token limit is reached, AI interactions are paused until the next day or until you upgrade your plan.
-
 **Is Xova in beta?**  
 Yes, Xova.new is in beta, and we are actively improving it based on feedback.
 
