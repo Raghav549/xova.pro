@@ -70,6 +70,70 @@ describe('project generation', () => {
     expect(paths).toContain('README.md');
   });
 
+  test('emits a single, well-formed document shell', () => {
+    const preview = result.previewDoc;
+
+    expect(preview.match(/<nav\b/g) ?? []).toHaveLength(1);
+    expect(preview.match(/<main\b/g) ?? []).toHaveLength(1);
+    expect(preview.match(/<footer class="xv-footer"/g) ?? []).toHaveLength(1);
+
+    /* the nav/footer sections must not be rendered twice by the section pass */
+    expect(preview.match(/class="xv-nav"/g) ?? []).toHaveLength(1);
+
+    /* no un-interpolated template leftovers or `undefined` leaks */
+    for (const leak of ['${', '[object Object]', '>undefined<']) {
+      expect(preview).not.toContain(leak);
+    }
+
+    expect(preview.match(/<section\b/g)?.length).toBe(preview.match(/<\/section>/g)?.length);
+    expect(preview.match(/<div\b/g)?.length).toBe(preview.match(/<\/div>/g)?.length);
+    expect(preview).toContain('<h1');
+  });
+
+  test('ships a physics runtime with sensible static settings', () => {
+    const motion = result.files.find((file) => file.path === 'src/motion.js')?.content ?? '';
+
+    expect(motion).toContain('fixedStep');
+    expect(motion).toContain('sphere');
+    expect(motion).toContain('prefers-reduced-motion');
+    expect(motion).toContain('pointer');
+
+    const tsconfig = JSON.parse(result.files.find((file) => file.path === 'tsconfig.json')?.content ?? '{}') as {
+      compilerOptions: Record<string, unknown>;
+    };
+
+    expect(tsconfig.compilerOptions.allowJs).toBe(true);
+    expect(tsconfig.compilerOptions.checkJs).toBe(false);
+
+    const entry = result.files.find((file) => file.path === 'src/main.ts')?.content ?? '';
+
+    expect(entry).toContain("'./motion.js'");
+  });
+
+  test('describes the Android build it promised', () => {
+    const manifest = result.files.find((file) => file.path === 'capacitor.config.json')?.content ?? '';
+    const gradle = result.files.find((file) => file.path === 'android/app/build.gradle')?.content ?? '';
+    const xml = result.files.find((file) => file.path === 'android/app/src/main/AndroidManifest.xml')?.content ?? '';
+
+    expect(JSON.parse(manifest).appId).toMatch(/^([a-z0-9]+\.)+[a-z0-9]+$/);
+    expect(gradle).toContain('applicationId');
+    expect(xml).toContain('<manifest');
+    expect(result.files.some((file) => file.path === 'ANDROID.md')).toBe(true);
+  });
+
+  test('ships a backend with validation, schema and containers', () => {
+    const server = result.files
+      .filter((file) => file.path.startsWith('server/'))
+      .map((file) => file.content)
+      .join('\n');
+
+    expect(server).toContain("from 'hono'");
+    expect(server).toContain("from 'zod'");
+    expect(server).toContain('/health');
+    expect(result.files.some((file) => file.path === 'docker-compose.yml')).toBe(true);
+    expect(result.files.some((file) => file.path === 'server/db/schema.ts')).toBe(true);
+  });
+
   test('emits valid JSON manifests', () => {
     const pkg = result.files.find((file) => file.path === 'package.json');
 

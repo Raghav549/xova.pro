@@ -416,8 +416,15 @@ export function renderSections(bp: Blueprint): string {
     footer: () => renderFooter(bp),
   };
 
-  const rendered = bp.sections.map((section) => renderers[section]?.() ?? '');
-  const body = rendered.filter((part) => !part.startsWith('<header') && !part.startsWith('<footer')).join('\n');
+  const body = bp.sections
+    .map((section) => renderers[section]?.() ?? '')
+    .filter((part) => {
+      const trimmed = part.trimStart();
+
+      /* nav and footer are rendered once, in document order, below */
+      return !trimmed.startsWith('<header') && !trimmed.startsWith('<footer');
+    })
+    .join('\n');
 
   return `${renderNav(bp)}
 <main>
