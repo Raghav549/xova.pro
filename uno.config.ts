@@ -35,17 +35,41 @@ const BASE_COLORS = {
     950: '#0A0A0A',
   },
   accent: {
-    50: '#EEF9FF',
-    100: '#D8F1FF',
-    200: '#BAE7FF',
-    300: '#8ADAFF',
-    400: '#53C4FF',
-    500: '#2BA6FF',
-    600: '#1488FC',
-    700: '#0D6FE8',
-    800: '#1259BB',
-    900: '#154E93',
-    950: '#122F59',
+    50: '#F3F1FF',
+    100: '#E9E5FF',
+    200: '#D5CEFF',
+    300: '#B7A9FF',
+    400: '#957DFF',
+    500: '#7C5CFF',
+    600: '#6A3FF5',
+    700: '#5A2EDB',
+    800: '#4A26B4',
+    900: '#3E2391',
+    950: '#241356',
+  },
+  cyan: {
+    50: '#ECFEFF',
+    100: '#CFFAFE',
+    200: '#A5F3FC',
+    300: '#67E8F9',
+    400: '#22D3EE',
+    500: '#06B6D4',
+    600: '#0891B2',
+    700: '#0E7490',
+    800: '#155E75',
+    900: '#164E63',
+  },
+  magenta: {
+    50: '#FFF0F7',
+    100: '#FFE3F1',
+    200: '#FFC7E3',
+    300: '#FF9BCB',
+    400: '#FF6FB1',
+    500: '#FF5FA2',
+    600: '#EE3B84',
+    700: '#C72467',
+    800: '#A01E54',
+    900: '#7D1A44',
   },
   green: {
     50: '#F0FDF4',
@@ -94,6 +118,8 @@ const COLOR_PRIMITIVES = {
     gray: generateAlphaPalette(BASE_COLORS.gray[900]),
     red: generateAlphaPalette(BASE_COLORS.red[500]),
     accent: generateAlphaPalette(BASE_COLORS.accent[500]),
+    cyan: generateAlphaPalette(BASE_COLORS.cyan[400]),
+    magenta: generateAlphaPalette(BASE_COLORS.magenta[500]),
   },
 };
 
@@ -103,6 +129,29 @@ export default defineConfig({
     'transition-theme': 'transition-[background-color,border-color,color] duration-150 xova-ease-cubic-bezier',
     kdb: 'bg-xova-elements-code-background text-xova-elements-code-text py-1 px-1.5 rounded-md',
     'max-w-chat': 'max-w-[var(--chat-max-width)]',
+    /* --- Xova Studio design system --- */
+    glass: 'bg-xova-glass-background border border-xova-elements-borderColor backdrop-blur-xl',
+    'glass-strong': 'bg-xova-glass-backgroundStrong border border-xova-elements-borderColorActive/40 backdrop-blur-2xl',
+    panel: 'bg-xova-elements-background-depth-2 border border-xova-elements-borderColor rounded-xl',
+    'panel-hover':
+      'hover:border-xova-elements-borderColorActive transition-[border-color,box-shadow,transform] duration-200 xova-ease-cubic-bezier',
+    'btn-base':
+      'inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-[transform,background-color,border-color,color,box-shadow] duration-200 xova-ease-cubic-bezier whitespace-nowrap select-none disabled:opacity-40 disabled:pointer-events-none',
+    'btn-secondary':
+      'btn-base bg-xova-elements-button-secondary-background text-xova-elements-button-secondary-text hover:bg-xova-elements-button-secondary-backgroundHover hover:-translate-y-px border border-xova-elements-borderColor',
+    'btn-ghost':
+      'btn-base bg-transparent text-xova-elements-textSecondary hover:text-xova-elements-textPrimary hover:bg-xova-elements-item-backgroundActive',
+    'btn-danger':
+      'btn-base bg-xova-elements-button-danger-background text-xova-elements-button-danger-text hover:bg-xova-elements-button-danger-backgroundHover',
+    chip: 'inline-flex items-center gap-1.5 rounded-full border border-xova-elements-borderColor bg-xova-elements-item-backgroundDefault px-2.5 py-1 text-xs text-xova-elements-textSecondary transition-theme',
+    'chip-active':
+      'chip border-xova-elements-borderColorActive text-xova-elements-textPrimary bg-xova-elements-item-backgroundAccent',
+    field:
+      'w-full rounded-lg border border-xova-elements-borderColor bg-xova-elements-background-depth-1/70 px-3 py-2 text-sm text-xova-elements-textPrimary placeholder-xova-elements-textTertiary outline-none focus:border-xova-elements-borderColorActive transition-theme',
+    'icon-btn':
+      'inline-flex items-center justify-center rounded-lg w-8 h-8 text-xova-elements-textSecondary hover:text-xova-elements-textPrimary hover:bg-xova-elements-item-backgroundActive transition-theme',
+    'mono-text': 'font-mono text-[12.5px] leading-[1.55]',
+    'section-label': 'text-[11px] uppercase tracking-[0.16em] text-xova-elements-textTertiary font-medium',
   },
   rules: [
     /**
@@ -223,6 +272,15 @@ export default defineConfig({
           cta: {
             background: 'var(--xova-elements-cta-background)',
             text: 'var(--xova-elements-cta-text)',
+          },
+          glass: {
+            background: 'var(--xova-glass-background)',
+            backgroundStrong: 'var(--xova-glass-background-strong)',
+          },
+          accent: {
+            glow: 'var(--xova-accent-glow)',
+            cyan: 'var(--xova-accent-cyan)',
+            magenta: 'var(--xova-accent-magenta)',
           },
         },
       },

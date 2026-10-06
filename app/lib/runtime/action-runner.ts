@@ -2,6 +2,7 @@ import { WebContainer } from '@webcontainer/api';
 import { map, type MapStore } from 'nanostores';
 import * as nodePath from 'node:path';
 import type { XovaAction } from '~/types/actions';
+import { ensureRuntime, runtimeStore } from '~/lib/stores/runtime';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 import type { ActionCallbackData } from './message-parser';
@@ -99,6 +100,28 @@ export class ActionRunner {
     const action = this.actions.get()[actionId];
 
     this.#updateAction(actionId, { status: 'running' });
+
+    /**
+     * WebContainer needs cross-origin isolation. When it is unavailable we mark
+     * the action as failed immediately (with an actionable message) instead of
+     * leaving every action spinning forever — the generated files are still in
+     * the studio editor and stream panel, and the static preview still renders.
+     */
+    if (!import.meta.env.SSR && runtimeStore.get().status !== 'ready') {
+      const isolatable = typeof window !== 'undefined' && window.crossOriginIsolated === true;
+
+      /* boot on demand when isolation is available, otherwise fail fast */
+      const status = isolatable ? await ensureRuntime() : 'unavailable';
+
+      if (status !== 'ready') {
+        this.#updateAction(actionId, {
+          status: 'failed',
+          error: 'In-browser runtime unavailable — run this project locally or open the studio in isolation mode.',
+        });
+
+        return;
+      }
+    }
 
     try {
       switch (action.type) {

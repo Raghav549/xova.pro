@@ -1,8 +1,10 @@
-import { json, type LoaderFunctionArgs } from '@remix-run/cloudflare';
-import { default as IndexRoute } from './_index';
+import { redirect, type LoaderFunctionArgs } from '@remix-run/cloudflare';
 
-export async function loader(args: LoaderFunctionArgs) {
-  return json({ id: args.params.id });
+/** Legacy route kept so old share links keep working. */
+export async function loader({ params }: LoaderFunctionArgs) {
+  return redirect(`/studio/${params.id}`, { status: 302 });
 }
 
-export default IndexRoute;
+export default function LegacyChatRedirect() {
+  return null;
+}
