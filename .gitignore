@@ -1,1 +1,39 @@
-Nothing should be ignored based on the provided file changes. The changes only include source/config files (.md files) and no build artifacts, dependencies, or temporary files.
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+build/
+dist/
+.wrangler/
+functions/[[path]].js
+
+# environment / secrets
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# local data
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# caches & tooling
+.cache/
+.node/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# editors / os
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# logs
+*.log
+npm-debug.log*

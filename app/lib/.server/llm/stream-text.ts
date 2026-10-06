@@ -1,8 +1,8 @@
 import { streamText as _streamText, convertToCoreMessages } from 'ai';
-import { getAPIKey } from '~/lib/.server/llm/api-key';
-import { getAnthropicModel } from '~/lib/.server/llm/model';
+import { resolveLlmConfig, type CredentialOverrides } from '~/lib/.server/llm/api-key';
+import { getModel } from '~/lib/.server/llm/model';
 import { MAX_TOKENS } from './constants';
-import { getSystemPrompt } from './prompts';
+import { getSystemPrompt, type ProjectTargets } from './prompts';
 
 interface ToolResult<Name extends string, Args, Result> {
   toolCallId: string;
@@ -21,15 +21,44 @@ export type Messages = Message[];
 
 export type StreamingOptions = Omit<Parameters<typeof _streamText>[0], 'model'>;
 
-export function streamText(messages: Messages, env: Env, options?: StreamingOptions) {
+export function streamText(
+  messages: Messages,
+  env: Env,
+  options?: StreamingOptions,
+  credentials: CredentialOverrides = {},
+  targets: ProjectTargets = {},
+) {
+  const config = resolveLlmConfig(env, credentials);
+
   return _streamText({
-    model: getAnthropicModel(getAPIKey(env)),
-    system: getSystemPrompt(),
+    model: getModel(config),
+    system: getSystemPrompt(undefined, targets),
     maxTokens: MAX_TOKENS,
-    headers: {
-      'anthropic-beta': 'max-tokens-3-5-sonnet-2024-07-15',
-    },
     messages: convertToCoreMessages(messages),
     ...options,
+  });
+}
+
+const encoder = new TextEncoder();
+
+/** Convert an AI SDK text stream into a plain `text/plain` byte stream. */
+export function plainTextStream(source: ReadableStream<string>): ReadableStream<Uint8Array> {
+  return source.pipeThrough(
+    new TransformStream<string, Uint8Array>({
+      transform(chunk, controller) {
+        controller.enqueue(encoder.encode(chunk));
+      },
+    }),
+  );
+}
+
+export function textResponse(source: ReadableStream<string>): Response {
+  return new Response(plainTextStream(source), {
+    status: 200,
+    headers: {
+      'content-type': 'text/plain; charset=utf-8',
+      'cache-control': 'no-cache, no-transform',
+      'x-accel-buffering': 'no',
+    },
   });
 }

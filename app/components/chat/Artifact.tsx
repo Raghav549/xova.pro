@@ -1,7 +1,7 @@
 import { useStore } from '@nanostores/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { computed } from 'nanostores';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { createHighlighter, type BundledLanguage, type BundledTheme, type HighlighterGeneric } from 'shiki';
 import type { ActionState } from '~/lib/runtime/action-runner';
 import { workbenchStore } from '~/lib/stores/workbench';
@@ -31,11 +31,31 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
   const artifacts = useStore(workbenchStore.artifacts);
   const artifact = artifacts[messageId];
 
+  /**
+   * The markdown renderer mounts this card as soon as the opening tag is
+   * parsed, which can be a frame before the artifact is registered. Guard
+   * against that instead of crashing the whole message.
+   */
   const actions = useStore(
-    computed(artifact.runner.actions, (actions) => {
-      return Object.values(actions);
-    }),
+    useMemo(
+      () =>
+        computed(artifact?.runner.actions ?? workbenchStore.artifacts, () => {
+          const runner = artifact?.runner;
+
+          return runner ? Object.values(runner.actions.get()) : [];
+        }),
+      [artifact],
+    ),
   );
+
+  if (!artifact) {
+    return (
+      <div className="artifact border border-xova-elements-borderColor flex items-center gap-3 rounded-lg w-full px-5 py-3.5 text-sm text-xova-elements-textSecondary">
+        <span className="i-svg-spinners:90-ring-with-bg text-xova-accent-cyan" />
+        Preparing project workspace…
+      </div>
+    );
+  }
 
   const toggleActions = () => {
     userToggledActions.current = true;
@@ -46,7 +66,7 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
     if (actions.length && !showActions && !userToggledActions.current) {
       setShowActions(true);
     }
-  }, [actions]);
+  }, [actions, showActions]);
 
   return (
     <div className="artifact border border-xova-elements-borderColor flex flex-col overflow-hidden rounded-lg w-full transition-border duration-150">

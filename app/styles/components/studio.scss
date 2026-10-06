@@ -1,0 +1,533 @@
+/* ------------------------------------------------------------------
+   Xova Studio — surfaces, motion primitives, stream + preview chrome
+   ------------------------------------------------------------------ */
+
+:root {
+  --studio-radius: 16px;
+  --studio-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.xv-app-shell {
+  position: relative;
+  isolation: isolate;
+  background: radial-gradient(1200px 700px at 12% -10%, var(--xova-aurora-1), transparent 60%),
+    radial-gradient(900px 600px at 100% 0%, var(--xova-aurora-2), transparent 55%), var(--xova-elements-bg-depth-1);
+}
+
+.xv-app-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: linear-gradient(to right, var(--xova-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--xova-grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(120% 80% at 50% 0%, black 35%, transparent 85%);
+}
+
+.xv-gradient-text {
+  background: linear-gradient(
+    100deg,
+    var(--xova-elements-textPrimary) 10%,
+    var(--xova-accent-glow) 55%,
+    var(--xova-accent-cyan) 95%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.xv-hairline {
+  background: linear-gradient(90deg, transparent, var(--xova-elements-borderColor), transparent);
+  height: 1px;
+}
+
+/* ---------- stream panel ---------- */
+
+.xv-stream {
+  border-radius: var(--studio-radius);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--xova-elements-bg-depth-2) 92%, transparent),
+    var(--xova-elements-bg-depth-1)
+  );
+  border: 1px solid var(--xova-elements-borderColor);
+  overflow: hidden;
+}
+
+.xv-stream-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--xova-elements-borderColor);
+  background: color-mix(in oklab, var(--xova-elements-bg-depth-3) 40%, transparent);
+  font-size: 12.5px;
+  color: var(--xova-elements-textSecondary);
+}
+
+.xv-dot-row {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.xv-dot-row i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--xova-elements-bg-depth-4);
+  box-shadow: inset 0 0 0 1px var(--xova-elements-borderColor);
+}
+
+.xv-dot-row i:nth-child(1) {
+  background: #ff5f57;
+}
+.xv-dot-row i:nth-child(2) {
+  background: #febc2e;
+}
+.xv-dot-row i:nth-child(3) {
+  background: #28c840;
+}
+
+.xv-stream-body {
+  position: relative;
+  max-height: 100%;
+  overflow: auto;
+  padding: 12px 0 18px;
+  font-family: var(--xova-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.xv-stream-file {
+  margin-bottom: 14px;
+}
+
+.xv-stream-file-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  color: var(--xova-elements-textSecondary);
+  font-size: 12px;
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(8px);
+  background: color-mix(in oklab, var(--xova-elements-bg-depth-1) 78%, transparent);
+  z-index: 2;
+}
+
+.xv-stream-file-head .path {
+  color: var(--xova-elements-textPrimary);
+  font-weight: 500;
+}
+
+.xv-stream-line {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 12px;
+  padding: 0 14px;
+  white-space: pre;
+}
+
+.xv-stream-line .no {
+  color: var(--xova-code-gutter);
+  text-align: right;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.xv-stream-line.is-new {
+  background: linear-gradient(90deg, color-mix(in oklab, var(--xova-accent-glow) 18%, transparent), transparent 65%);
+  animation: xv-line-in 0.4s var(--studio-ease);
+}
+
+.xv-caret {
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  translate: 0 2px;
+  background: var(--xova-accent-glow);
+  box-shadow: 0 0 12px var(--xova-accent-glow);
+  animation: xv-blink 1s steps(2, start) infinite;
+}
+
+@keyframes xv-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes xv-line-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+
+/* ---------- slide deck ---------- */
+
+.xv-deck {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--studio-radius);
+  touch-action: pan-y;
+}
+
+.xv-deck-track {
+  display: flex;
+  transition: transform 0.6s var(--studio-ease);
+  will-change: transform;
+}
+
+.xv-deck-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  padding: 4px;
+  cursor: grab;
+}
+
+.xv-deck-slide:active {
+  cursor: grabbing;
+}
+
+.xv-deck-card {
+  position: relative;
+  height: 100%;
+  border-radius: var(--studio-radius);
+  border: 1px solid var(--xova-elements-borderColor);
+  background: linear-gradient(
+      150deg,
+      color-mix(in oklab, var(--slide-accent, var(--xova-accent-glow)) 16%, transparent),
+      transparent 55%
+    ),
+    var(--xova-glass-background);
+  backdrop-filter: blur(18px);
+  padding: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.xv-deck-card::after {
+  content: '';
+  position: absolute;
+  inset: -40% 40% 60% -30%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--slide-accent, var(--xova-accent-glow)) 45%, transparent),
+    transparent 65%
+  );
+  opacity: 0.5;
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.xv-deck-badge {
+  align-self: flex-start;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slide-accent, var(--xova-accent-glow));
+}
+
+.xv-deck-card h3 {
+  font-size: 19px;
+  margin: 0;
+}
+
+.xv-deck-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--xova-elements-textSecondary);
+  font-size: 13px;
+  display: grid;
+  gap: 6px;
+}
+
+.xv-deck-dots {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  padding: 12px 0 2px;
+}
+
+.xv-deck-dots button {
+  width: 26px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--xova-elements-bg-depth-4);
+  border: 0;
+  transition:
+    background 0.3s var(--studio-ease),
+    width 0.3s var(--studio-ease);
+}
+
+.xv-deck-dots button.is-active {
+  width: 40px;
+  background: linear-gradient(90deg, var(--xova-accent-glow), var(--xova-accent-cyan));
+}
+
+/* ---------- preview chrome ---------- */
+
+.xv-preview-frame {
+  position: relative;
+  border-radius: var(--studio-radius);
+  border: 1px solid var(--xova-elements-borderColor);
+  background: var(--xova-elements-bg-depth-3);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  transition: background 0.3s var(--studio-ease);
+}
+
+.xv-device {
+  position: relative;
+  background: var(--xova-elements-bg-depth-1);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 40px 90px -50px var(--xova-shadow-color);
+  transition:
+    width 0.4s var(--studio-ease),
+    height 0.4s var(--studio-ease),
+    border-radius 0.4s var(--studio-ease);
+  width: 100%;
+  height: 100%;
+}
+
+.xv-device iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.xv-device-notch {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  translate: -50% 0;
+  width: 92px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--xova-elements-bg-depth-1);
+  box-shadow: 0 0 0 1px var(--xova-elements-borderColor);
+  z-index: 3;
+}
+
+.xv-preview-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--xova-glass-background);
+  border: 1px solid var(--xova-elements-borderColor);
+  backdrop-filter: blur(14px);
+}
+
+.xv-address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  border-radius: 999px;
+  border: 1px solid var(--xova-elements-borderColor);
+  background: var(--xova-elements-bg-depth-2);
+  padding: 6px 12px;
+  font-size: 12.5px;
+  color: var(--xova-elements-textSecondary);
+}
+
+.xv-address span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- code panel ---------- */
+
+.xv-code-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100%;
+  min-height: 0;
+}
+
+.xv-code-body {
+  overflow: auto;
+  background: var(--xova-elements-bg-depth-1);
+}
+
+.xv-code-text {
+  font-family: var(--xova-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 12.5px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+.xv-code-line {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+}
+
+.xv-code-line .no {
+  color: var(--xova-code-gutter);
+  text-align: right;
+  padding-right: 12px;
+  user-select: none;
+}
+
+.xv-code-line .src {
+  white-space: pre;
+  padding-right: 16px;
+}
+
+.xv-token-key {
+  color: #c792ea;
+}
+.xv-token-string {
+  color: #c3e88d;
+}
+.xv-token-comment {
+  color: #6b7394;
+  font-style: italic;
+}
+.xv-token-number {
+  color: #f78c6c;
+}
+.xv-token-tag {
+  color: #82aaff;
+}
+.xv-token-keyword {
+  color: #89ddff;
+}
+.xv-token-fn {
+  color: #ffcb6b;
+}
+
+/* ---------- misc ---------- */
+
+.xv-log {
+  font-family: var(--xova-font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.xv-log-entry {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 10px;
+  color: var(--xova-elements-textSecondary);
+}
+
+.xv-log-entry time {
+  color: var(--xova-elements-textTertiary);
+}
+
+.xv-log-entry.ok {
+  color: #34d399;
+}
+.xv-log-entry.error {
+  color: #fb7185;
+}
+.xv-log-entry.file {
+  color: var(--xova-accent-cyan);
+}
+.xv-log-entry.shell {
+  color: var(--xova-accent-glow);
+}
+
+.xv-progress {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--xova-elements-bg-depth-4);
+  overflow: hidden;
+}
+
+.xv-progress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--xova-accent-glow), var(--xova-accent-cyan));
+  transition: width 0.5s var(--studio-ease);
+}
+
+.xv-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+  animation: xv-pulse-ring 1.8s infinite;
+}
+
+@keyframes xv-pulse-ring {
+  70% {
+    box-shadow: 0 0 0 10px rgba(52, 211, 153, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+  }
+}
+
+.xv-tabbar {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--xova-elements-borderColor);
+  background: var(--xova-glass-background);
+  backdrop-filter: blur(12px);
+}
+
+.xv-tab {
+  border: 0;
+  background: transparent;
+  border-radius: 9px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--xova-elements-textSecondary);
+  transition:
+    background 0.2s var(--studio-ease),
+    color 0.2s var(--studio-ease);
+  white-space: nowrap;
+}
+
+.xv-tab:hover {
+  color: var(--xova-elements-textPrimary);
+}
+
+.xv-tab.is-active {
+  background: var(--xova-elements-item-backgroundAccent);
+  color: var(--xova-elements-textPrimary);
+  box-shadow: inset 0 0 0 1px var(--xova-elements-borderColorActive);
+}
+
+.xv-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.xv-scroll::-webkit-scrollbar-thumb {
+  background: var(--xova-elements-bg-depth-4);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.xv-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--xova-elements-borderColorActive);
+}
+.xv-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (max-width: 900px) {
+  .xv-code-grid {
+    grid-template-columns: 1fr;
+  }
+}

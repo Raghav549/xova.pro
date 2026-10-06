@@ -6,9 +6,47 @@
 @import './components/code.scss';
 @import './components/editor.scss';
 @import './components/toast.scss';
+@import './components/studio.scss';
+@import './components/site.scss';
 
 html,
 body {
   height: 100%;
   width: 100%;
+}
+
+body {
+  background-color: var(--xova-elements-bg-depth-1);
+  color: var(--xova-elements-textPrimary);
+  font-family:
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--xova-accent-glow) 45%, transparent);
+  color: var(--xova-elements-textPrimary);
+}
+
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--xova-accent-glow);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

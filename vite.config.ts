@@ -9,6 +9,16 @@ export default defineConfig((config) => {
   return {
     build: {
       target: 'esnext',
+      chunkSizeWarningLimit: 1600,
+    },
+    server: {
+      host: true,
+      port: 5173,
+      strictPort: false,
+    },
+    preview: {
+      host: true,
+      port: 4173,
     },
     plugins: [
       nodePolyfills({
