@@ -68,8 +68,11 @@ export default async function handleRequest(
 
   responseHeaders.set('Content-Type', 'text/html');
 
-  responseHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
-  responseHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+  /**
+   * Cross-origin isolation is applied per route (only the studio needs it, so it
+   * can run the browser Node runtime). Marketing pages keep loading third-party
+   * fonts, images and embeds normally.
+   */
 
   return new Response(body, {
     headers: responseHeaders,

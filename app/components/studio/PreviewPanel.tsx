@@ -119,7 +119,7 @@ export const PreviewPanel = memo(() => {
             onClick={() => setRotated((value) => !value)}
             title="Rotate device"
           >
-            <span className="i-ph:device-mobile-rotor" />
+            <span className="i-ph:device-mobile-camera" />
           </button>
           <button
             type="button"

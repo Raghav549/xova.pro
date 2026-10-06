@@ -2,7 +2,7 @@ import { WebContainer } from '@webcontainer/api';
 import { map, type MapStore } from 'nanostores';
 import * as nodePath from 'node:path';
 import type { XovaAction } from '~/types/actions';
-import { runtimeStore } from '~/lib/stores/runtime';
+import { ensureRuntime, runtimeStore } from '~/lib/stores/runtime';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 import type { ActionCallbackData } from './message-parser';
@@ -108,12 +108,19 @@ export class ActionRunner {
      * the studio editor and stream panel, and the static preview still renders.
      */
     if (!import.meta.env.SSR && runtimeStore.get().status !== 'ready') {
-      this.#updateAction(actionId, {
-        status: 'failed',
-        error: 'In-browser runtime unavailable — run this project locally or open the studio in isolation mode.',
-      });
+      const isolatable = typeof window !== 'undefined' && window.crossOriginIsolated === true;
 
-      return;
+      /* boot on demand when isolation is available, otherwise fail fast */
+      const status = isolatable ? await ensureRuntime() : 'unavailable';
+
+      if (status !== 'ready') {
+        this.#updateAction(actionId, {
+          status: 'failed',
+          error: 'In-browser runtime unavailable — run this project locally or open the studio in isolation mode.',
+        });
+
+        return;
+      }
     }
 
     try {
