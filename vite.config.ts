@@ -1,9 +1,17 @@
 import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as remixVitePlugin } from '@remix-run/dev';
+import { vercelPreset } from '@vercel/remix/vite';
 import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+/**
+ * Vercel sets `VERCEL=1` in its build environment. Only there do we enable the
+ * Vercel preset (which emits a `.vercel/output` build); everywhere else the
+ * classic build in `build/` is produced for Cloudflare Pages (`wrangler`).
+ */
+const isVercelBuild = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
 
 export default defineConfig((config) => {
   return {
@@ -14,8 +22,9 @@ export default defineConfig((config) => {
       nodePolyfills({
         include: ['path', 'buffer'],
       }),
-      config.mode !== 'test' && remixCloudflareDevProxy(),
+      config.mode !== 'test' && !isVercelBuild && remixCloudflareDevProxy(),
       remixVitePlugin({
+        presets: isVercelBuild ? [vercelPreset()] : [],
         future: {
           v3_fetcherPersist: true,
           v3_relativeSplatPath: true,
