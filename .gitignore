@@ -1,1 +1,13 @@
-Nothing should be ignored based on the provided file changes. The changes only include source/config files (.md files) and no build artifacts, dependencies, or temporary files.
+node_modules
+/.cache
+/build
+/dev
+.env
+.env.local
+/public/build
+/.mf
+.vercel
+.wrangler
+/dist
+*.log
+.DS_Store
